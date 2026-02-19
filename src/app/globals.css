@@ -1,26 +1,240 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-heading: 'Plus Jakarta Sans', sans-serif;
 
-@theme inline {
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius: var(--radius);
 }
 
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Marvel Driving Brand Colors - Based on Business Card */
+    --background: 200 20% 96%;
+    --foreground: 150 40% 18%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 150 40% 18%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 150 40% 18%;
+
+    /* Primary: Dark Green - Trust & Safety (from logo) */
+    --primary: 145 65% 28%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary: Light cream/gray background */
+    --secondary: 200 15% 94%;
+    --secondary-foreground: 145 65% 28%;
+
+    /* Muted for subtle backgrounds */
+    --muted: 200 12% 92%;
+    --muted-foreground: 150 25% 40%;
+
+    /* Accent: Gold/Yellow - Excellence (from logo) */
+    --accent: 42 100% 50%;
+    --accent-foreground: 150 40% 15%;
+
+    /* Destructive: Red - Alertness */
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* CTA: Vibrant Red for call-to-actions */
+    --cta: 0 72% 51%;
+    --cta-foreground: 0 0% 100%;
+
+    --border: 140 20% 88%;
+    --input: 140 20% 88%;
+    --ring: 140 60% 25%;
+
+    --radius: 0.75rem;
+
+    /* Custom Marvel Colors (from business card) */
+    --marvel-green: 145 65% 28%;
+    --marvel-green-light: 145 55% 38%;
+    --marvel-gold: 42 100% 50%;
+    --marvel-gold-dark: 38 95% 42%;
+    --marvel-red: 0 72% 51%;
+    --marvel-red-dark: 0 72% 42%;
+
+    /* Driving Test Package Section */
+    --driving-test-bg: 215 30% 22%;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(145 65% 28%) 0%, hsl(145 55% 38%) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(42 100% 50%) 0%, hsl(38 95% 42%) 100%);
+    --gradient-cta: linear-gradient(135deg, hsl(0 72% 51%) 0%, hsl(0 72% 42%) 100%);
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(140 60% 25% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(140 60% 25% / 0.1), 0 2px 4px -2px hsl(140 60% 25% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(140 60% 25% / 0.1), 0 4px 6px -4px hsl(140 60% 25% / 0.1);
+    --shadow-xl: 0 20px 25px -5px hsl(140 60% 25% / 0.1), 0 8px 10px -6px hsl(140 60% 25% / 0.1);
+
+    --sidebar-background: 140 40% 98%;
+    --sidebar-foreground: 140 30% 26%;
+    --sidebar-primary: 140 60% 25%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 140 30% 95%;
+    --sidebar-accent-foreground: 140 30% 15%;
+    --sidebar-border: 140 20% 91%;
+    --sidebar-ring: 140 60% 45%;
+  }
+
+  .dark {
+    --background: 150 30% 8%;
+    --foreground: 140 20% 95%;
+
+    --card: 150 25% 12%;
+    --card-foreground: 140 20% 95%;
+
+    --popover: 150 25% 12%;
+    --popover-foreground: 140 20% 95%;
+
+    --primary: 140 55% 45%;
+    --primary-foreground: 150 30% 8%;
+
+    --secondary: 150 20% 18%;
+    --secondary-foreground: 140 20% 95%;
+
+    --muted: 150 20% 18%;
+    --muted-foreground: 140 15% 65%;
+
+    --accent: 45 90% 55%;
+    --accent-foreground: 150 30% 8%;
+
+    --destructive: 0 62% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    --cta: 0 72% 55%;
+    --cta-foreground: 0 0% 100%;
+
+    --border: 150 20% 20%;
+    --input: 150 20% 20%;
+    --ring: 140 55% 45%;
+
+    --sidebar-background: 150 30% 10%;
+    --sidebar-foreground: 140 20% 95%;
+    --sidebar-primary: 140 55% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 150 20% 15%;
+    --sidebar-accent-foreground: 140 20% 95%;
+    --sidebar-border: 150 20% 15%;
+    --sidebar-ring: 140 55% 55%;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold tracking-tight;
+  }
+}
+
+@layer utilities {
+  .text-gradient-gold {
+    @apply bg-clip-text text-transparent;
+    background-image: var(--gradient-gold);
+  }
+
+  .bg-gradient-hero {
+    background-image: var(--gradient-hero);
+  }
+
+  .bg-gradient-gold {
+    background-image: var(--gradient-gold);
+  }
+
+  .bg-gradient-cta {
+    background-image: var(--gradient-cta);
+  }
+
+  .shadow-marvel {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .shadow-marvel-xl {
+    box-shadow: var(--shadow-xl);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
 }
