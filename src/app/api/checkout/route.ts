@@ -1,9 +1,17 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2024-12-18.acacia' as any,
-});
+// Lazy initialize Stripe to avoid build-time errors if environment variables are missing
+let stripe: Stripe | null = null;
+
+function getStripe() {
+    if (!stripe && process.env.STRIPE_SECRET_KEY) {
+        stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+            apiVersion: '2024-12-18.acacia' as any,
+        });
+    }
+    return stripe;
+}
 
 export async function POST(req: Request) {
     try {
@@ -16,10 +24,8 @@ export async function POST(req: Request) {
         }
 
         const body = await req.json();
-        console.log('Checkout API Body Received:', body);
         const {
             bookingId,
-            customerName,
             customerEmail,
             serviceName,
             price,
@@ -27,8 +33,13 @@ export async function POST(req: Request) {
             time
         } = body;
 
-        // Clean price string (e.g. "$65/hour" -> 65, "$210" -> 210)
+        // Clean price string
         const numericPrice = parseInt(price.replace(/[^0-9]/g, ''));
+
+        const stripe = getStripe();
+        if (!stripe) {
+            throw new Error('Stripe is not configured. STRIPE_SECRET_KEY may be missing.');
+        }
 
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],

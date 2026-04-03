@@ -2,18 +2,39 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2024-12-18.acacia' as any,
-});
+// Lazy initialization to prevent build-time crashes if keys are missing
+let stripeInstance: Stripe | null = null;
+let supabaseInstance: any = null;
 
-const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+function getStripe() {
+    if (!stripeInstance && process.env.STRIPE_SECRET_KEY) {
+        stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY, {
+            apiVersion: '2024-12-18.acacia' as any,
+        });
+    }
+    return stripeInstance;
+}
+
+function getSupabase() {
+    if (!supabaseInstance && process.env.NEXT_PUBLIC_SUPABASE_URL) {
+        supabaseInstance = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL,
+            process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+        );
+    }
+    return supabaseInstance;
+}
 
 export async function POST(req: Request) {
     const body = await req.text();
     const signature = req.headers.get('stripe-signature') as string;
+
+    const stripe = getStripe();
+    const supabaseAdmin = getSupabase();
+
+    if (!stripe || !supabaseAdmin) {
+        return NextResponse.json({ error: 'Services not initialized' }, { status: 500 });
+    }
 
     let event: Stripe.Event;
 
@@ -33,7 +54,6 @@ export async function POST(req: Request) {
         const bookingId = session.metadata?.bookingId;
 
         if (bookingId) {
-            // Update booking status
             const { error } = await supabaseAdmin
                 .from('bookings')
                 .update({ 
