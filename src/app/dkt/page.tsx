@@ -47,34 +47,35 @@ export default function DKT() {
     return (
         <>
             {/* Hero Section */}
-            <section className="relative py-20 md:py-32 overflow-hidden bg-gradient-to-r from-[#1e5128] to-[#143d1d]">
-                <div className="absolute inset-0 opacity-20">
-                    <img src={heroImage} alt="DKT Study" className="w-full h-full object-cover" />
+            <section className="relative py-24 md:py-48 overflow-hidden">
+                <div className="absolute inset-0">
+                    <img src="/hero-dashboard.jpg" alt="DKT Study" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-[#0a2f14]/85" />
                 </div>
                 <div className="container mx-auto px-4 relative z-10">
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="max-w-2xl text-white"
+                        className="max-w-3xl"
                     >
-                        <span className="inline-block px-4 py-2 bg-[#fbbf24] text-black rounded-full text-sm font-bold mb-6">
+                        <span className="inline-block px-4 py-2 bg-[#fbbf24] text-[#0a2f14] rounded-full text-xs font-extrabold mb-8 tracking-wider uppercase">
                             Get Your Learner's Licence
                         </span>
-                        <h1 className="text-4xl md:text-5xl font-extrabold mb-6">
+                        <h1 className="text-5xl md:text-7xl font-extrabold mb-8 leading-tight text-white tracking-tight">
                             Driver Knowledge Test (DKT)
                         </h1>
-                        <p className="text-lg text-white/90 mb-8">
+                        <p className="text-xl md:text-2xl text-white/90 mb-12 leading-relaxed font-medium">
                             The Driver Knowledge Test is your first step towards getting your NSW driver's licence.
                             We help you prepare and pass with confidence.
                         </p>
-                        <div className="flex flex-col sm:flex-row gap-4">
-                            <Button className="bg-[#fbbf24] hover:bg-[#d97706] text-black font-bold text-lg h-14 px-8" asChild>
+                        <div className="flex flex-col sm:flex-row gap-6">
+                            <Button className="bg-white text-[#0a2f14] hover:bg-gray-100 font-extrabold text-lg h-16 px-12 rounded-full shadow-2xl transition-all hover:scale-105" asChild>
                                 <Link href="/book">
-                                    <Car className="h-5 w-5 mr-2" />
+                                    <Car className="h-5 w-5 mr-3" />
                                     Book Driving Lessons
                                 </Link>
                             </Button>
-                            <Button variant="outline" className="border-white text-white hover:bg-white/10 font-bold text-lg h-14 px-8" asChild>
+                            <Button variant="outline" className="border-white text-white hover:bg-white/10 font-extrabold text-lg h-16 px-12 rounded-full backdrop-blur-sm shadow-xl transition-all hover:scale-105" asChild>
                                 <Link href="/contact">Get Help</Link>
                             </Button>
                         </div>

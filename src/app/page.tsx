@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Shield, Award, Clock, Car, Users, ChevronRight, Home as HomeIcon, MapPin } from "lucide-react";
+import { Shield, Award, Clock, Car, Users, ChevronRight, ArrowRight, Home as HomeIcon, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ServiceAreaMarquee } from "@/components/ServiceAreaMarquee";
 import { GetInTouchSection } from "@/components/home/GetInTouchSection";
@@ -21,29 +21,29 @@ const services = [
     icon: Car,
     title: "Driving Lessons & Support",
     description: "Beginner automatic driving lessons at $65/hour with patient, supportive instructors.",
-    link: "/services",
-    color: "bg-[#1e5128]"
+    link: "/automatic-lessons",
+    color: "bg-[#0a2f14]/10 text-[#0a2f14]"
   },
   {
     icon: MapPin,
     title: "Transport Services",
-    description: "Safe, reliable transport to appointments, therapies, work, education and community activities.",
-    link: "/services",
-    color: "bg-[#dc2626]"
-  },
-  {
-    icon: HomeIcon,
-    title: "Daily Living Support",
-    description: "Assistance with personal activities, daily tasks and routine management to encourage independence.",
-    link: "/services",
-    color: "bg-[#b45309]"
+    description: "Safe, reliable transport to medical appointments, community outings & social activities.",
+    link: "/ndis-services",
+    color: "bg-[#0a2f14]/10 text-[#0a2f14]"
   },
   {
     icon: Users,
-    title: "Community Participation",
-    description: "Support to engage in social, recreational and community activities, building confidence and skills.",
-    link: "/services",
-    color: "bg-[#1e5128]"
+    title: "Daily Living Support",
+    description: "Supporting independence at home and in the community with personal care & daily tasks.",
+    link: "/ndis-services",
+    color: "bg-[#0a2f14]/10 text-[#0a2f14]"
+  },
+  {
+    icon: Shield,
+    title: "Safe & Supportive",
+    description: "NDIS registered provider committed to choice, control and community for all participants.",
+    link: "/ndis-services",
+    color: "bg-[#0a2f14]/10 text-[#0a2f14]"
   }
 ];
 
@@ -93,10 +93,10 @@ export default function Home() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
-              <Button size="lg" className="bg-[#fbbf24] text-[#1e5128] hover:bg-[#f59e0b] font-bold h-14 px-8 text-lg rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all" asChild>
+              <Button size="lg" className="bg-white text-[#1e5128] hover:bg-gray-100 font-bold h-14 px-8 text-lg rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all" asChild>
                 <Link href="/book">
                   Book a Service
-                  <ChevronRight className="h-5 w-5 ml-2" />
+                  <ArrowRight className="h-5 w-5 ml-2" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="bg-transparent text-white border-2 border-white hover:bg-white/10 h-14 px-8 text-lg rounded-full font-bold backdrop-blur-sm" asChild>
@@ -104,11 +104,53 @@ export default function Home() {
               </Button>
             </div>
 
-            <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm mt-4 text-white bg-[#1e5128]/80 font-bold backdrop-blur-md border border-[#fbbf24]/30">
-              <MapPin className="h-4 w-4 text-[#fbbf24]" />
+            <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm mt-8 text-[#1e5128] bg-[#fbbf24] font-extrabold shadow-lg hover:scale-105 transition-transform">
+              <MapPin className="h-4 w-4" />
               Serving Penshurst, Hurstville & Bexley
             </span>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Trusted Features Section */}
+      <section className="-mt-12 relative z-20 pb-12">
+        <div className="container px-4 md:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+            {[
+              {
+                icon: Shield,
+                title: "NDIS Registered",
+                desc: "Fully registered and compliant NDIS provider"
+              },
+              {
+                icon: Award,
+                title: "Professional Team",
+                desc: "Highly experienced, compassionate and professionally trained staff"
+              },
+              {
+                icon: Clock,
+                title: "Reliable Service",
+                desc: "Safe, punctual and dependable support you can count on"
+              }
+            ].map((feature, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.5 }}
+                className="bg-white p-6 md:p-8 rounded-[2rem] shadow-xl shadow-gray-200/50 border border-gray-100 flex items-center gap-6 group hover:border-[#1e5128]/30 transition-all"
+              >
+                <div className="shrink-0 w-16 h-16 bg-[#1e5128] rounded-2xl flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform">
+                  <feature.icon className="h-8 w-8" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-[#0a2f14] mb-1">{feature.title}</h3>
+                  <p className="text-gray-500 leading-relaxed text-sm">{feature.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -138,16 +180,16 @@ export default function Home() {
                 transition={{ delay: index * 0.1 }}
                 className="h-full"
               >
-                <Link href={service.link} className="block h-full p-8 bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group flex flex-col items-center text-center border border-gray-100">
-                  <div className={`inline-flex p-5 ${service.color} rounded-2xl mb-6 shadow-md transform group-hover:scale-110 transition-transform duration-300`}>
-                    <service.icon className="h-8 w-8 text-white" />
+                <Link href={service.link} className="block h-full p-10 bg-white rounded-[3rem] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)] hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] transition-all duration-500 hover:-translate-y-2 group flex flex-col items-center text-center border border-gray-50/50">
+                  <div className={`inline-flex p-6 ${service.color} rounded-2xl mb-8 group-hover:scale-105 transition-transform duration-500`}>
+                    <service.icon className="h-10 w-10" />
                   </div>
-                  <h3 className="text-xl font-bold mb-4 text-gray-900 group-hover:text-[#1e5128] transition-colors leading-tight">
+                  <h3 className="text-2xl font-extrabold mb-5 text-[#0a2f14] tracking-tight">
                     {service.title}
                   </h3>
-                  <p className="text-gray-600 mb-8 flex-grow leading-relaxed text-sm">{service.description}</p>
-                  <span className="inline-flex items-center text-[#1e5128] font-bold text-sm group-hover:gap-2 transition-all mt-auto uppercase tracking-wide">
-                    Learn More <ChevronRight className="h-4 w-4 ml-1" />
+                  <p className="text-gray-500 mb-10 flex-grow leading-relaxed text-[15px] font-normal">{service.description}</p>
+                  <span className="inline-flex items-center text-[#1e5128] font-bold text-sm group-hover:gap-2 transition-all mt-auto uppercase tracking-widest">
+                    LEARN MORE <ArrowRight className="h-4 w-4 ml-1.5" />
                   </span>
                 </Link>
               </motion.div>

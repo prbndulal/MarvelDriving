@@ -132,26 +132,26 @@ export default function Blog() {
     const regularPosts = blogPosts.filter(post => !post.featured);
 
     return (
-        <div className="flex flex-col min-h-screen bg-[#f3f4f6]">
+        <div className="flex flex-col min-h-screen bg-white">
             {/* Hero Section */}
-            <section className="relative py-20 md:py-32 overflow-hidden">
+            <section className="relative py-24 md:py-36 overflow-hidden">
                 <img
-                    src="/faq.jpg"
-                    alt=""
+                    src="/faq-hero.jpg"
+                    alt="Blog Hero"
                     className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-[#1e5128]/70" />
-                <div className="container px-4 md:px-8 relative z-10">
+                <div className="absolute inset-0 bg-[#0a2f14]/85" />
+                <div className="container px-4 md:px-8 relative z-10 text-center text-white">
                     <motion.div
-                        initial={{ opacity: 0, y: 30 }}
+                        initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="max-w-3xl mx-auto text-center text-white"
+                        className="max-w-4xl mx-auto"
                     >
-                        <h1 className="text-4xl md:text-5xl font-extrabold mb-6">
+                        <h1 className="text-4xl md:text-7xl font-extrabold mb-8 tracking-tight">
                             Marvel Driving Blog
                         </h1>
-                        <p className="text-lg text-white/90">
-                            Driving tips, road safety updates, NDIS information, and news
+                        <p className="text-lg md:text-xl text-white/90 leading-relaxed font-medium">
+                            Driving tips, road safety updates, NDIS information, and news 
                             from Marvel Driving School.
                         </p>
                     </motion.div>
@@ -159,16 +159,16 @@ export default function Blog() {
             </section>
 
             {/* Category Filter */}
-            <section className="py-6 bg-gray-50 border-b border-gray-200">
+            <section className="py-10 bg-gray-50 border-b border-gray-100">
                 <div className="container px-4 md:px-8">
-                    <div className="flex flex-wrap justify-center gap-3">
+                    <div className="flex flex-wrap justify-center gap-4">
                         {categories.map((cat) => (
                             <button
                                 key={cat}
                                 onClick={() => setSelectedCategory(cat)}
-                                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${selectedCategory === cat
+                                className={`px-6 py-2.5 rounded-full text-sm font-extrabold transition-all shadow-sm active:scale-95 ${selectedCategory === cat
                                         ? "bg-[#1e5128] text-white"
-                                        : "bg-white text-gray-700 hover:bg-[#1e5128] hover:text-white border border-gray-200"
+                                        : "bg-white text-[#0a2f14] border border-gray-100 hover:bg-gray-50"
                                     }`}
                             >
                                 {cat}

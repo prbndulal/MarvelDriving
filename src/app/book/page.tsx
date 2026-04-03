@@ -53,7 +53,7 @@ const serviceTypes = [
         value: "test-package",
         label: "Driving Test Package",
         description: "1hr pickup, 45min warm-up, use of instructor's vehicle for test",
-        price: "$220",
+        price: "$210",
         isPaid: true,
         icon: FileCheck
     },
@@ -109,8 +109,8 @@ function BookingContent() {
 
     useEffect(() => {
         const type = searchParams.get("type");
-        if (type === "test-package") {
-            setFormData(prev => ({ ...prev, serviceType: "test-package" }));
+        if (type && serviceTypes.find(s => s.value === type)) {
+            setFormData(prev => ({ ...prev, serviceType: type }));
         }
     }, [searchParams]);
 
@@ -194,7 +194,7 @@ function BookingContent() {
 
         if (selectedService?.isPaid) {
             try {
-                const { error } = await supabase
+                const { data: booking, error: insertError } = await supabase
                     .from('bookings')
                     .insert({
                         customer_name: `${formData.firstName} ${formData.lastName}`,
@@ -207,21 +207,43 @@ function BookingContent() {
                         notes: `Price: ${selectedService.price}\nExperience: ${formData.experience}\n${formData.notes}`,
                         status: 'pending',
                         payment_status: 'unpaid',
-                    });
+                    })
+                    .select()
+                    .single();
 
-                if (error) throw error;
+                if (insertError) throw insertError;
 
-                toast({
-                    title: "Redirecting to Payment...",
-                    description: "This is a demo. Booking saved as pending payment.",
+                // Call Stripe Checkout
+                const response = await fetch('/api/checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        bookingId: booking.id,
+                        customerName: `${formData.firstName} ${formData.lastName}`,
+                        customerEmail: formData.email,
+                        serviceName: selectedService.label,
+                        price: selectedService.price,
+                        date: dateStr,
+                        time: formData.lessonTime
+                    }),
                 });
-                setTimeout(() => setStep(5), 1500);
+
+                const checkout = await response.json();
+                if (checkout.url) {
+                    window.location.assign(checkout.url);
+                } else {
+                    throw new Error(checkout.error || 'Failed to create checkout session');
+                }
 
             } catch (error: any) {
-                console.error('Payment error:', error);
+                console.error('Detailed Payment Error:', error);
+                const errorMessage = error.message || (typeof error === 'object' ? JSON.stringify(error) : String(error));
+                
                 toast({
                     title: "Booking Error",
-                    description: error.message || "There was an error processing your request.",
+                    description: errorMessage.includes('relation "public.bookings" does not exist') 
+                        ? "Database not initialized. Please run the schema.sql in Supabase." 
+                        : errorMessage,
                     variant: "destructive",
                 });
             } finally {
@@ -473,11 +495,6 @@ function BookingContent() {
                                                         onSelect={(date) => setFormData({ ...formData, lessonDate: date || null, lessonTime: "" })}
                                                         disabled={(date) => isBefore(date, minBookingDate)}
                                                         className="rounded-md border-0"
-                                                        classNames={{
-                                                            head_cell: "text-[#1e5128] font-semibold w-9",
-                                                            day_selected: "bg-[#1e5128] text-white hover:bg-[#1e5128] hover:text-white focus:bg-[#1e5128] focus:text-white",
-                                                            day_today: "bg-gray-100 text-gray-900 font-bold",
-                                                        }}
                                                     />
                                                 </div>
                                                 <p className="text-xs text-gray-500 flex items-center gap-1">
@@ -865,7 +882,7 @@ function BookingContent() {
                                             ) : isPaidService ? (
                                                 <>
                                                     <CreditCard className="h-6 w-6 mr-2" />
-                                                    Pay & Confirm Booking — $65
+                                                    Pay & Confirm Booking — {selectedService?.price.split('/').shift()}
                                                 </>
                                             ) : (
                                                 <>

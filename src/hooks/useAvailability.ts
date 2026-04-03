@@ -41,7 +41,8 @@ export function useAvailability(date: Date | null) {
                     .neq('status', 'cancelled');
 
                 if (rulesError && rulesError.code !== 'PGRST116') {
-                    console.error("Error fetching rules:", rulesError);
+                    // Log more detail but don't show the error overlay unless we have to
+                    console.log("Supabase Availability Fetch Error:", rulesError.message || rulesError);
                 }
 
                 let startH, startM, endH, endM;

@@ -64,25 +64,25 @@ export default function Gallery() {
     };
 
     return (
-        <div className="flex flex-col min-h-screen bg-[#f3f4f6]">
+        <div className="flex flex-col min-h-screen bg-white">
             {/* Hero Section */}
-            <section className="relative py-20 md:py-32 overflow-hidden">
+            <section className="relative py-24 md:py-36 overflow-hidden">
                 <img
-                    src="/contact-hero.jpg"
-                    alt=""
+                    src="/slider-1.jpg"
+                    alt="Gallery Hero"
                     className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-[#1e5128]/70" />
-                <div className="container px-4 md:px-8 relative z-10">
+                <div className="absolute inset-0 bg-[#0a2f14]/85" />
+                <div className="container px-4 md:px-8 relative z-10 text-center text-white">
                     <motion.div
-                        initial={{ opacity: 0, y: 30 }}
+                        initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="max-w-3xl mx-auto text-center text-white"
+                        className="max-w-4xl mx-auto"
                     >
-                        <h1 className="text-4xl md:text-5xl font-extrabold mb-6">
+                        <h1 className="text-4xl md:text-7xl font-extrabold mb-8 tracking-tight">
                             Gallery
                         </h1>
-                        <p className="text-lg text-white/90">
+                        <p className="text-lg md:text-xl text-white/90 leading-relaxed font-medium">
                             Take a look at our automatic driving lessons, modern vehicle fleet,
                             NDIS transport services, and our dedicated team in action.
                         </p>
@@ -91,16 +91,16 @@ export default function Gallery() {
             </section>
 
             {/* Filter Tabs */}
-            <section className="py-8 bg-gray-50 sticky top-0 z-40 border-b border-gray-200">
+            <section className="py-12 bg-gray-50 border-b border-gray-100">
                 <div className="container px-4 md:px-8">
-                    <div className="flex flex-wrap justify-center gap-3">
+                    <div className="flex flex-wrap justify-center gap-4">
                         {categories.map((cat) => (
                             <button
                                 key={cat.id}
                                 onClick={() => setSelectedCategory(cat.id)}
-                                className={`px-5 py-2.5 rounded-full font-medium transition-all ${selectedCategory === cat.id
+                                className={`px-8 py-3 rounded-full font-extrabold transition-all shadow-md hover:shadow-lg hover:scale-105 active:scale-95 ${selectedCategory === cat.id
                                         ? "bg-[#1e5128] text-white"
-                                        : "bg-white text-gray-700 hover:bg-[#1e5128]/10 border border-gray-200"
+                                        : "bg-white text-[#0a2f14] border border-gray-100"
                                     }`}
                             >
                                 {cat.label}
@@ -111,11 +111,11 @@ export default function Gallery() {
             </section>
 
             {/* Gallery Grid */}
-            <section className="py-16">
-                <div className="container px-4 md:px-8">
+            <section className="py-24">
+                <div className="container px-4 md:px-8 max-w-7xl mx-auto">
                     <motion.div
                         layout
-                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10"
                     >
                         <AnimatePresence mode="popLayout">
                             {filteredImages.map((image, index) => (
@@ -125,19 +125,18 @@ export default function Gallery() {
                                     initial={{ opacity: 0, scale: 0.9 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.9 }}
-                                    transition={{ duration: 0.3 }}
+                                    transition={{ duration: 0.4 }}
                                     className="group cursor-pointer"
                                     onClick={() => openLightbox(index)}
                                 >
-                                    <div className="relative aspect-[4/3] overflow-hidden rounded-xl shadow-lg">
+                                    <div className="relative aspect-[4/3] overflow-hidden rounded-[2.5rem] shadow-xl border border-gray-50 bg-white p-2">
                                         <img
                                             src={image.src}
                                             alt={image.alt}
-                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                            className="w-full h-full object-cover rounded-[2rem] transition-transform duration-700 group-hover:scale-110"
                                         />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-[#1e5128]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                                        <div className="absolute bottom-0 left-0 right-0 p-4 text-white translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                                            <p className="font-medium text-sm">{image.alt}</p>
+                                        <div className="absolute inset-2 bg-[#0a2f14]/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[2rem] flex items-center justify-center">
+                                            <p className="text-white font-extrabold text-lg px-8 text-center">{image.alt}</p>
                                         </div>
                                     </div>
                                 </motion.div>
@@ -146,8 +145,8 @@ export default function Gallery() {
                     </motion.div>
 
                     {filteredImages.length === 0 && (
-                        <div className="text-center py-20">
-                            <p className="text-gray-600">No images found in this category.</p>
+                        <div className="text-center py-32">
+                            <p className="text-xl text-gray-500 font-medium">No images found in this category.</p>
                         </div>
                     )}
                 </div>

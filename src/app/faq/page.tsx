@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { HelpCircle, Car, Accessibility, Calendar, CreditCard } from "lucide-react";
+import { HelpCircle, Car, Accessibility, Calendar, CreditCard, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import {
@@ -108,28 +108,28 @@ const faqCategories = [
 
 export default function FAQ() {
     return (
-        <div className="flex flex-col min-h-screen bg-[#f3f4f6]">
+        <div className="flex flex-col min-h-screen bg-white">
             {/* Hero Section */}
-            <section className="relative py-20 md:py-28 overflow-hidden">
+            <section className="relative py-24 md:py-36 overflow-hidden">
                 <img
-                    src="/faq.jpg"
-                    alt=""
+                    src="/faq-hero.jpg"
+                    alt="Frequently Asked Questions"
                     className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-[#1e5128]/70" />
-                <div className="container px-4 md:px-8 relative z-10">
+                <div className="absolute inset-0 bg-[#0a2f14]/85" />
+                <div className="container px-4 md:px-8 relative z-10 text-center text-white">
                     <motion.div
-                        initial={{ opacity: 0, y: 30 }}
+                        initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="text-center max-w-3xl mx-auto text-white"
+                        className="max-w-3xl mx-auto"
                     >
-                        <div className="inline-flex p-4 bg-[#fbbf24]/20 rounded-full mb-6">
-                            <HelpCircle className="h-12 w-12 text-[#fbbf24]" />
+                        <div className="inline-flex p-5 bg-[#fbbf24] rounded-full mb-8 shadow-2xl">
+                            <HelpCircle className="h-10 w-10 text-[#0a2f14]" />
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-extrabold mb-6">
+                        <h1 className="text-4xl md:text-6xl font-extrabold mb-8 leading-tight">
                             Frequently Asked Questions
                         </h1>
-                        <p className="text-lg text-white/90">
+                        <p className="text-lg md:text-xl text-white/90 leading-relaxed font-medium">
                             Find answers to common questions about our driving lessons, NDIS services,
                             booking process and more. Can't find what you're looking for? Contact us!
                         </p>
@@ -137,10 +137,20 @@ export default function FAQ() {
                 </div>
             </section>
 
-            {/* FAQ Categories */}
-            <section className="py-20">
+            {/* Service Area Pill */}
+            <div className="bg-gray-50 py-3 border-b border-gray-100">
+                <div className="container px-4 text-center">
+                    <p className="text-sm font-bold text-[#0a2f14]/60 uppercase tracking-widest flex items-center justify-center gap-2">
+                        <MapPin className="h-4 w-4 text-[#fbbf24]" />
+                        Support available in <span className="text-[#0a2f14]">Penshurst, Hurstville, Bexley</span> and surrounding areas
+                    </p>
+                </div>
+            </div>
+
+            {/* FAQ Sections */}
+            <section className="py-24">
                 <div className="container px-4 md:px-8">
-                    <div className="max-w-4xl mx-auto space-y-12">
+                    <div className="max-w-4xl mx-auto space-y-20">
                         {faqCategories.map((category, categoryIndex) => (
                             <motion.div
                                 key={category.title}
@@ -149,25 +159,25 @@ export default function FAQ() {
                                 viewport={{ once: true }}
                                 transition={{ delay: categoryIndex * 0.1 }}
                             >
-                                <div className="flex items-center gap-3 mb-6">
-                                    <div className="p-3 bg-[#1e5128] rounded-xl shadow-lg">
-                                        <category.icon className="h-6 w-6 text-white" />
+                                <div className="flex items-center gap-4 mb-10">
+                                    <div className="p-4 bg-[#0a2f14] rounded-2xl shadow-xl">
+                                        <category.icon className="h-7 w-7 text-white" />
                                     </div>
-                                    <h2 className="text-2xl font-bold text-[#1e5128]">{category.title}</h2>
+                                    <h2 className="text-3xl font-extrabold text-[#0a2f14] tracking-tight">{category.title}</h2>
                                 </div>
 
-                                <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
-                                    <Accordion type="single" collapsible className="w-full">
+                                <div className="space-y-4">
+                                    <Accordion type="single" collapsible className="w-full space-y-4">
                                         {category.questions.map((faq, index) => (
                                             <AccordionItem
                                                 key={index}
                                                 value={`${category.title}-${index}`}
-                                                className="border-b border-gray-200 last:border-b-0"
+                                                className="border border-gray-100 rounded-2xl bg-white shadow-sm overflow-hidden"
                                             >
-                                                <AccordionTrigger className="px-6 py-4 text-left hover:no-underline hover:bg-gray-50 transition-colors">
-                                                    <span className="font-semibold pr-4 text-gray-900">{faq.question}</span>
+                                                <AccordionTrigger className="px-8 py-6 text-left hover:no-underline hover:bg-gray-50 transition-all font-extrabold text-[#0a2f14] text-lg">
+                                                    {faq.question}
                                                 </AccordionTrigger>
-                                                <AccordionContent className="px-6 pb-4 text-gray-600">
+                                                <AccordionContent className="px-8 pb-6 text-gray-500 text-lg font-medium leading-relaxed">
                                                     {faq.answer}
                                                 </AccordionContent>
                                             </AccordionItem>
@@ -181,29 +191,33 @@ export default function FAQ() {
             </section>
 
             {/* Still Have Questions CTA */}
-            <section className="py-20 bg-gray-50">
+            <section className="py-24 bg-gray-50">
                 <div className="container px-4 md:px-8">
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
-                        className="text-center max-w-2xl mx-auto p-12 bg-white rounded-2xl shadow-xl border border-gray-200"
+                        className="text-center max-w-4xl mx-auto p-12 md:p-20 bg-white rounded-[4rem] shadow-2xl border border-gray-100 relative overflow-hidden"
                     >
-                        <HelpCircle className="h-12 w-12 text-[#1e5128] mx-auto mb-4" />
-                        <h2 className="text-2xl md:text-3xl font-bold text-[#1e5128] mb-4">
-                            Still Have Questions?
-                        </h2>
-                        <p className="text-gray-600 mb-8">
-                            Can't find the answer you're looking for? Our friendly team is here to help.
-                            Get in touch and we'll get back to you as soon as possible.
-                        </p>
-                        <div className="flex flex-col sm:flex-row justify-center gap-4">
-                            <Button className="bg-[#1e5128] hover:bg-[#164019] text-white" size="lg" asChild>
-                                <Link href="/contact">Contact Us</Link>
-                            </Button>
-                            <Button variant="outline" size="lg" className="border-[#1e5128] text-[#1e5128] hover:bg-[#1e5128] hover:text-white" asChild>
-                                <Link href="/book">Book a Service</Link>
-                            </Button>
+                        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#1e5128] via-[#fbbf24] to-[#1e5128]" />
+                        
+                        <div className="relative z-10">
+                            <HelpCircle className="h-16 w-16 text-[#fbbf24] mx-auto mb-8 animate-bounce-slow" />
+                            <h2 className="text-3xl md:text-5xl font-extrabold text-[#0a2f14] mb-6 tracking-tight">
+                                Still Have Questions?
+                            </h2>
+                            <p className="text-lg md:text-xl text-gray-500 mb-12 font-medium max-w-2xl mx-auto leading-relaxed">
+                                Can't find the answer you're looking for? Our friendly team is here to help.
+                                Get in touch and we'll get back to you as soon as possible.
+                            </p>
+                            <div className="flex flex-col sm:flex-row justify-center gap-6">
+                                <Button className="bg-[#1e5128] hover:bg-[#0a2f14] text-white font-extrabold text-lg h-16 px-12 rounded-full shadow-xl transition-all hover:scale-105" size="lg" asChild>
+                                    <Link href="/contact">Contact Us Today</Link>
+                                </Button>
+                                <Button variant="outline" size="lg" className="border-[#1e5128] text-[#1e5128] hover:bg-[#1e5128] hover:text-white font-extrabold text-lg h-16 px-12 rounded-full shadow-xl transition-all hover:scale-105" asChild>
+                                    <Link href="/book">Book a Service</Link>
+                                </Button>
+                            </div>
                         </div>
                     </motion.div>
                 </div>

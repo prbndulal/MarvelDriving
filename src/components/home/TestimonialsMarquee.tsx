@@ -4,25 +4,9 @@ import { Star, CheckCircle } from "lucide-react";
 // Real avatars or placeholders
 const testimonials = [
     {
-        name: "Angle W.",
-        role: "NDIS Participant",
-        text: "The driving instructors are so patient and supportive. I finally...",
-        rating: 5,
-        initial: "A",
-        bg: "bg-red-100 text-red-600"
-    },
-    {
-        name: "Robert C.",
-        role: "Family Member",
-        text: "\"Marvel Transport has been a game changer for our family...\"",
-        rating: 5,
-        initial: "R",
-        bg: "bg-blue-100 text-blue-600"
-    },
-    {
         name: "Sarah M.",
         role: "NDIS Participant",
-        text: "\"Marvel Driving helped me gain my independence. The instr...\"",
+        text: "Marvel Driving helped me gain my independence. The instructor was patient and explained everything clearly.",
         rating: 5,
         initial: "S",
         bg: "bg-green-100 text-green-600"
@@ -30,18 +14,42 @@ const testimonials = [
     {
         name: "James T.",
         role: "NDIS Participant",
-        text: "\"The transport service has given me so much freedom...\"",
+        text: "The transport service has given me so much more independence and freedom to attend my community activities.",
         rating: 5,
         initial: "J",
+        bg: "bg-blue-100 text-blue-600"
+    },
+    {
+        name: "Michelle K.",
+        role: "Support Coordinator",
+        text: "Highly recommend for NDIS participants. Professional, reliable and excellent communication with coordinators.",
+        rating: 5,
+        initial: "M",
+        bg: "bg-purple-100 text-purple-600"
+    },
+    {
+        name: "Priya S.",
+        role: "NDIS Participant",
+        text: "The community participation support has helped me make new friends and become more active in local activities.",
+        rating: 5,
+        initial: "P",
+        bg: "bg-red-100 text-red-600"
+    },
+    {
+        name: "Tom B.",
+        role: "Learner Driver",
+        text: "Passed my driving test on the first attempt thanks to Marvel. Great experience and very calm environment.",
+        rating: 5,
+        initial: "T",
         bg: "bg-yellow-100 text-yellow-600"
     },
     {
         name: "Fatima A.",
         role: "NDIS Participant",
-        text: "\"As a new migrant, Marvel made me feel welcome and safe...\"",
+        text: "As a new migrant, Marvel made me feel welcome and safe. They really care about their participants' wellbeing.",
         rating: 5,
         initial: "F",
-        bg: "bg-purple-100 text-purple-600"
+        bg: "bg-emerald-100 text-emerald-600"
     }
 ];
 

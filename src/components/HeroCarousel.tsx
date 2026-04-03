@@ -32,7 +32,23 @@ export function HeroCarousel() {
                     className="w-full h-full object-cover"
                 />
             </AnimatePresence>
-            <div className="absolute inset-0 bg-gradient-to-r from-[#1e5128]/90 via-[#1e5128]/70 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#1e5128]/95 via-[#1e5128]/70 to-transparent" />
+            
+            {/* Carousel Indicators */}
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-30">
+                {images.map((_, i) => (
+                    <button
+                        key={i}
+                        onClick={() => setIndex(i)}
+                        className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                            index === i 
+                            ? "bg-[#fbbf24] w-8 shadow-lg shadow-[#fbbf24]/20" 
+                            : "bg-white/40 hover:bg-white/60"
+                        }`}
+                        aria-label={`Go to slide ${i + 1}`}
+                    />
+                ))}
+            </div>
         </div>
     );
 }

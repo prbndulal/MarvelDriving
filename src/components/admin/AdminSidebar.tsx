@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
     LayoutDashboard,
     CalendarDays,
@@ -9,10 +9,15 @@ import {
     MessageSquare,
     Settings,
     LogOut,
-    Car
+    Car,
+    Clock,
+    Home
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
+import { createClient } from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
 
 const sidebarItems = [
     {
@@ -31,51 +36,91 @@ const sidebarItems = [
         icon: MessageSquare,
     },
     {
+        title: "Availability",
+        href: "/admin/availability",
+        icon: Clock,
+    },
+    {
         title: "Instructors",
         href: "/admin/instructors",
         icon: Users,
-    },
-    {
-        title: "Settings",
-        href: "/admin/settings",
-        icon: Settings,
     },
 ];
 
 export function AdminSidebar() {
     const pathname = usePathname();
+    const router = useRouter();
+    const { toast } = useToast();
+    const supabase = createClient();
+
+    const handleSignOut = async () => {
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+            toast({
+                title: "Sign out failed",
+                description: error.message,
+                variant: "destructive"
+            });
+        } else {
+            router.push("/login");
+            toast({
+                title: "Signed out",
+                description: "You have been securely logged out.",
+            });
+        }
+    };
 
     return (
-        <div className="flex h-screen w-64 flex-col border-r bg-gray-900 text-white">
-            <div className="p-6">
-                <div className="flex items-center gap-2 font-bold text-xl text-[#fbbf24]">
-                    <Car className="h-6 w-6" />
+        <div className="flex h-screen w-72 flex-col border-r border-gray-800 bg-[#0a2f14] text-white shadow-2xl">
+            <div className="p-8">
+                <Link href="/" className="flex items-center gap-3 font-black text-2xl text-[#fbbf24] tracking-tighter group">
+                    <div className="p-2 bg-[#fbbf24] rounded-xl text-[#0a2f14] group-hover:rotate-12 transition-transform duration-300">
+                        <Car className="h-6 w-6" />
+                    </div>
                     <span>Marvel Admin</span>
-                </div>
+                </Link>
             </div>
+            
             <div className="flex-1 overflow-auto py-4">
-                <nav className="grid gap-1 px-4">
+                <nav className="grid gap-2 px-6">
+                    <p className="px-3 text-[10px] font-extrabold text-[#fbbf24]/50 uppercase tracking-[0.2em] mb-2">Main Menu</p>
                     {sidebarItems.map((item, index) => (
                         <Link
                             key={index}
                             href={item.href}
                             className={cn(
-                                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-gray-800",
-                                pathname === item.href ? "bg-[#1e5128] text-white" : "text-gray-400"
+                                "flex items-center gap-4 rounded-2xl px-4 py-4 text-sm font-extrabold transition-all duration-300",
+                                pathname === item.href 
+                                ? "bg-[#fbbf24] text-[#0a2f14] shadow-lg shadow-[#fbbf24]/10 translate-x-1" 
+                                : "text-white/60 hover:text-white hover:bg-white/5"
                             )}
                         >
-                            <item.icon className="h-4 w-4" />
+                            <item.icon className={cn("h-5 w-5", pathname === item.href ? "text-[#0a2f14]" : "text-[#fbbf24]/70")} />
                             {item.title}
                         </Link>
                     ))}
                 </nav>
             </div>
-            <div className="p-4 border-t border-gray-800">
-                <Button variant="ghost" className="w-full justify-start gap-3 text-gray-400 hover:text-white hover:bg-gray-800">
-                    <LogOut className="h-4 w-4" />
-                    Sign Out
-                </Button>
+
+            <div className="p-6 border-t border-white/5">
+                <div className="grid gap-2">
+                    <Link 
+                        href="/" 
+                        className="flex items-center gap-4 rounded-2xl px-4 py-4 text-sm font-bold text-white/40 hover:text-white hover:bg-white/5 transition-all"
+                    >
+                        <Home className="h-5 w-5" />
+                        Back to Site
+                    </Link>
+                    <button 
+                        onClick={handleSignOut}
+                        className="flex items-center gap-4 rounded-2xl px-4 py-4 text-sm font-bold text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-all w-full text-left"
+                    >
+                        <LogOut className="h-5 w-5" />
+                        Sign Out
+                    </button>
+                </div>
             </div>
         </div>
     );
 }
+

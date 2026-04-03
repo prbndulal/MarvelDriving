@@ -5,6 +5,9 @@ import { clsx } from "clsx";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 
+import { AuthProvider } from "@/providers/AuthProvider";
+import { Toaster } from "@/components/ui/toaster";
+
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-plus-jakarta",
@@ -12,8 +15,8 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "DriveRight - Master the Road with Confidence",
-  description: "Professional driving lessons with certified instructors. Book your first lesson today!",
+  title: "Marvel Driving and Transport | NDIS Transport & Driving Services Sydney",
+  description: "Empowering Independence through safe, professional and supportive transport and driving services. NDIS registered provider.",
 };
 
 export default function RootLayout({
@@ -22,18 +25,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={clsx(
+          plusJakarta.variable, // Added variable class
           plusJakarta.className,
           "antialiased font-sans flex flex-col min-h-screen"
         )}
       >
-        <Navbar />
-        <main className="flex-grow">
-          {children}
-        </main>
-        <Footer />
+        <AuthProvider>
+          <Navbar />
+          <main className="flex-grow">
+            {children}
+          </main>
+          <Footer />
+          <Toaster />
+        </AuthProvider>
       </body>
     </html>
   );

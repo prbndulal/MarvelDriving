@@ -65,6 +65,10 @@ create policy "Admins can update bookings" on public.bookings
 create policy "Anyone can create bookings" on public.bookings
   for insert with check (true);
 
+-- Anyone can view booking slots (required for availability check)
+create policy "Anyone can view booking slots" on public.bookings
+  for select using (true);
+
 -- Enquiries table (Contact form / NDIS)
 create table public.enquiries (
   id uuid default gen_random_uuid() primary key,
@@ -113,3 +117,7 @@ create table public.availability (
 );
 
 alter table public.availability enable row level security;
+
+-- Anyone can view availability
+create policy "Anyone can view availability" on public.availability
+  for select using (true);

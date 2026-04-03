@@ -136,47 +136,47 @@ export default function NDISServices() {
         <>
             <div className="bg-white">
                 {/* Hero Section */}
-                <section className="relative py-20 md:py-32 overflow-hidden">
+                <section className="relative py-24 md:py-36 overflow-hidden">
                     <div className="absolute inset-0">
                         <img
-                            src={ndisHeroBanner}
+                            src="/hero-van.jpg"
                             alt="NDIS disability support services in Sydney NSW"
                             className="w-full h-full object-cover"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-r from-[#1e5128]/95 via-[#1e5128]/85 to-[#1e5128]/60" />
+                        <div className="absolute inset-0 bg-[#0a2f14]/85" />
                     </div>
 
                     <div className="container mx-auto px-4 relative z-10">
                         <motion.div
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="max-w-2xl text-white"
+                            initial={{ opacity: 0, x: -30 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className="max-w-3xl text-white"
                         >
-                            <span className="inline-block px-4 py-2 bg-[#fbbf24] text-black rounded-full text-sm font-bold mb-6">
+                            <span className="inline-block px-4 py-2 bg-[#fbbf24] text-[#0a2f14] rounded-full text-xs font-extrabold mb-6 tracking-wider uppercase">
                                 NDIS Registered Provider — #4050085206
                             </span>
-                            <h1 className="text-4xl md:text-5xl font-extrabold mb-6 leading-tight">
+                            <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
                                 NDIS Disability Support Services in Sydney
                             </h1>
-                            <p className="text-lg text-white/90 mb-4">
+                            <p className="text-xl text-white/90 mb-6 leading-relaxed">
                                 Marvel Driving and Transport Pty Ltd (ABN: 65 661 258 591) is an
                                 Australian-owned, NDIS registered provider supporting people of all
                                 abilities to travel safely, build independence and participate in
                                 community life.
                             </p>
-                            <p className="text-white/80 mb-8 text-sm font-medium">
+                            <p className="text-white/70 mb-10 text-sm font-bold tracking-wide uppercase">
                                 Serving Penshurst, Hurstville &amp; Bexley — Sydney, NSW
                             </p>
-                            <div className="flex flex-col sm:flex-row gap-4">
-                                <Button className="bg-white text-[#1e5128] hover:bg-gray-100 font-bold text-lg h-14 px-8" asChild>
+                            <div className="flex flex-col sm:flex-row gap-5">
+                                <Button className="bg-white text-[#0a2f14] hover:bg-white/95 font-extrabold text-lg h-16 px-10 rounded-full shadow-xl hover:scale-105 transition-all" asChild>
                                     <a href="#ndis-enquiry">
-                                        <FileText className="h-5 w-5 mr-2" />
+                                        <FileText className="h-5 w-5 mr-3" />
                                         Make an NDIS Enquiry
                                     </a>
                                 </Button>
-                                <Button variant="outline" className="border-white text-white hover:bg-white/10 font-bold text-lg h-14 px-8" asChild>
+                                <Button variant="outline" className="border-white/40 text-white hover:bg-white/10 font-extrabold text-lg h-16 px-10 rounded-full backdrop-blur-sm shadow-xl hover:scale-105 transition-all" asChild>
                                     <a href="tel:0431306570">
-                                        <Phone className="h-5 w-5 mr-2" />
+                                        <Phone className="h-5 w-5 mr-3" />
                                         Call Us
                                     </a>
                                 </Button>
@@ -186,13 +186,13 @@ export default function NDISServices() {
                 </section>
 
                 {/* Service Area Banner */}
-                <section className="py-3 bg-[#e8e9eb] border-b border-gray-200">
+                <section className="py-4 bg-gray-50 border-b border-gray-200">
                     <div className="container mx-auto px-4">
-                        <div className="flex items-center justify-center gap-2 text-sm text-[#1e5128]">
-                            <MapPin className="h-4 w-4" />
+                        <div className="flex items-center justify-center gap-3 text-sm font-bold text-[#0a2f14]/70 uppercase tracking-widest">
+                            <MapPin className="h-4 w-4 text-[#fbbf24]" />
                             <span>
                                 NDIS services available in{" "}
-                                <strong>Penshurst, Hurstville &amp; Bexley</strong>, Sydney NSW
+                                <span className="text-[#0a2f14]">Penshurst, Hurstville &amp; Bexley</span>, Sydney NSW
                             </span>
                         </div>
                     </div>

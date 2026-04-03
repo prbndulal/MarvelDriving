@@ -17,48 +17,51 @@ export default function AutomaticLessons() {
         <>
             <div className="bg-white">
                 {/* Hero Section */}
-                <section className="relative py-20 md:py-32 overflow-hidden">
+                <section className="relative py-24 md:py-48 overflow-hidden">
                     <div className="absolute inset-0">
-                        <img src={heroImage} alt="Automatic driving lessons" className="w-full h-full object-cover" />
-                        <div className="absolute inset-0 bg-gradient-to-r from-[#1e5128]/95 via-[#1e5128]/85 to-[#1e5128]/60" />
+                        <img 
+                            src="/hero-dashboard.jpg" 
+                            alt="Automatic driving lessons" 
+                            className="w-full h-full object-cover" 
+                        />
+                        <div className="absolute inset-0 bg-[#0a2f14]/85" />
                     </div>
-
+    
                     <div className="container mx-auto px-4 relative z-10">
-                        <motion.div initial={{
-                            opacity: 0,
-                            y: 30
-                        }} animate={{
-                            opacity: 1,
-                            y: 0
-                        }} className="max-w-2xl text-white">
-                            <span className="inline-block px-4 py-2 bg-[#fbbf24] text-black rounded-full text-sm font-bold mb-6">
+                        <motion.div 
+                            initial={{ opacity: 0, y: 30 }} 
+                            animate={{ opacity: 1, y: 0 }} 
+                            className="max-w-3xl"
+                        >
+                            <span className="inline-block px-4 py-2 bg-[#fbbf24] text-[#0a2f14] rounded-full text-xs font-extrabold mb-8 tracking-wider uppercase">
                                 Automatic Transmission Only
                             </span>
-                            <h1 className="text-4xl md:text-5xl font-extrabold mb-6">
+                            <h1 className="text-5xl md:text-7xl font-extrabold mb-8 leading-tight text-white tracking-tight">
                                 Automatic Driving Lessons
                             </h1>
-                            <p className="text-lg text-white/90 mb-6">
-                                Learn to drive stress-free in our modern automatic vehicles.
-                                Professional instruction tailored to beginners.
+                            <p className="text-xl md:text-2xl text-white/90 mb-12 leading-relaxed font-medium">
+                                Learn to drive stress-free in our modern automatic vehicles. Professional instruction tailored to beginners.
                             </p>
-
-                            {/* Important Notice */}
-                            <div className="flex items-start gap-3 p-4 bg-white/10 backdrop-blur-sm rounded-lg mb-8 border border-white/20">
-                                <AlertCircle className="h-6 w-6 text-[#fbbf24] flex-shrink-0 mt-0.5" />
-                                <p className="text-white/90">
-                                    <strong>Please Note:</strong> We exclusively offer automatic transmission lessons.
-                                    Manual transmission lessons are not available.
+    
+                            {/* Alert Box */}
+                            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 md:p-8 mb-12 flex gap-5 max-w-2xl">
+                                <div className="bg-[#fbbf24] p-3 rounded-full h-fit">
+                                    <AlertCircle className="h-6 w-6 text-[#0a2f14]" />
+                                </div>
+                                <p className="text-white/95 text-lg leading-relaxed font-bold">
+                                    <span className="text-[#fbbf24] uppercase text-sm block mb-2 tracking-[0.2em]">Please Note:</span>
+                                    We exclusively offer automatic transmission lessons. Manual transmission lessons are not available.
                                 </p>
                             </div>
-
-                            <div className="flex flex-col sm:flex-row gap-4">
-                                <Button className="bg-[#fbbf24] hover:bg-[#d97706] text-black font-bold text-lg h-14 px-8" asChild>
+    
+                            <div className="flex flex-col sm:flex-row gap-6">
+                                <Button className="bg-white text-[#0a2f14] hover:bg-gray-100 font-extrabold text-lg h-16 px-12 rounded-full shadow-2xl transition-all hover:scale-105" asChild>
                                     <Link href="/book">
-                                        <Calendar className="h-5 w-5 mr-2" />
+                                        <Calendar className="h-5 w-5 mr-3" />
                                         Book Online Now
                                     </Link>
                                 </Button>
-                                <Button variant="outline" className="border-white text-white hover:bg-white/10 font-bold text-lg h-14 px-8" asChild>
+                                <Button variant="outline" className="border-white text-white hover:bg-white/10 font-extrabold text-lg h-16 px-12 rounded-full backdrop-blur-sm shadow-xl transition-all hover:scale-105" asChild>
                                     <Link href="/contact">Enquire First</Link>
                                 </Button>
                             </div>

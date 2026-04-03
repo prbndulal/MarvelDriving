@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { motion } from "framer-motion";
 import {
     Select,
     SelectContent,
@@ -66,41 +67,78 @@ export default function Contact() {
     };
 
     return (
-        <div className="flex flex-col min-h-screen bg-[#e8e9eb]">
+        <div className="flex flex-col min-h-screen bg-white">
+            {/* Hero Section */}
+            <section className="relative py-24 md:py-32 overflow-hidden">
+                <img
+                    src="/contact-hero.jpg"
+                    alt="Contact Marvel Driving"
+                    className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-[#0a2f14]/85" />
+                <div className="container px-4 md:px-8 relative z-10 text-center">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="max-w-3xl mx-auto text-white"
+                    >
+                        <h1 className="text-xl md:text-2xl font-bold mb-4 opacity-30 uppercase tracking-[0.3em]">
+                            Contact Us
+                        </h1>
+                        <h2 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
+                            Contact Us
+                        </h2>
+                        <p className="text-lg md:text-xl text-white/90 leading-relaxed font-medium">
+                            Have a question or ready to book? Get in touch with our friendly team today. We're here to help!
+                        </p>
+                    </motion.div>
+                </div>
+            </section>
+
+            {/* Service Area Pill */}
+            <div className="bg-gray-50 py-3 border-b border-gray-100">
+                <div className="container px-4 text-center">
+                    <p className="text-sm font-bold text-[#0a2f14]/60 uppercase tracking-widest flex items-center justify-center gap-2">
+                        <MapPin className="h-4 w-4 text-[#fbbf24]" />
+                        Proudly serving <span className="text-[#0a2f14]">Penshurst, Hurstville, Bexley</span> and surrounding areas
+                    </p>
+                </div>
+            </div>
+
             {/* Contact Info & Form Section */}
-            <section className="py-20 md:py-24">
+            <section className="py-20 md:py-28">
                 <div className="container px-4 md:px-8 max-w-7xl mx-auto">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
-                        {/* Left Side - Contact Info & Map */}
-                        <div className="space-y-12">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
+                        {/* Left Side - Contact Info */}
+                        <div className="space-y-16">
                             <div>
-                                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Get in Touch</h2>
-                                <p className="text-gray-600 leading-relaxed text-lg">
+                                <h2 className="text-4xl font-extrabold text-[#0a2f14] mb-8 tracking-tight">Get in Touch</h2>
+                                <p className="text-lg text-gray-500 leading-relaxed font-medium">
                                     Whether you're enquiring about driving lessons or NDIS transport, we'd love to hear from you. Choose your preferred contact method below.
                                 </p>
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-10">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-12">
                                 {contactInfo.map((item) => (
-                                    <div key={item.title} className="space-y-4">
-                                        <div className="flex items-center gap-3">
-                                            <div className="p-3 bg-white rounded-xl border border-gray-200 shadow-sm">
-                                                <item.icon className="h-6 w-6 text-[#1e5128]" />
+                                    <div key={item.title} className="group">
+                                        <div className="flex items-center gap-5 mb-5">
+                                            <div className="p-4 rounded-full border-2 border-[#1e5128] text-[#1e5128] group-hover:bg-[#1e5128] group-hover:text-white transition-all duration-300">
+                                                <item.icon className="h-6 w-6" />
                                             </div>
+                                            <h3 className="text-xl font-extrabold text-[#0a2f14] tracking-tight">{item.title}</h3>
                                         </div>
                                         <div>
-                                            <h3 className="font-bold text-gray-900 mb-2 text-lg">{item.title}</h3>
                                             {item.href ? (
                                                 <a
                                                     href={item.href}
-                                                    className="text-[#1e5128] font-bold hover:underline block mb-1 text-lg"
+                                                    className="text-[#1e5128] font-extrabold hover:underline block mb-2 text-xl tracking-tight"
                                                 >
                                                     {item.value}
                                                 </a>
                                             ) : (
-                                                <p className="font-bold text-gray-900 mb-1 text-lg">{item.value}</p>
+                                                <p className="font-extrabold text-[#0a2f14] mb-2 text-xl tracking-tight">{item.value}</p>
                                             )}
-                                            <p className="text-gray-600">
+                                            <p className="text-gray-500 font-medium text-sm">
                                                 {item.description}
                                             </p>
                                         </div>
@@ -108,44 +146,43 @@ export default function Contact() {
                                 ))}
                             </div>
 
-                            {/* Map - Smaller size on left */}
-                            <div className="aspect-[4/3] bg-gray-200 rounded-2xl overflow-hidden shadow-md border border-gray-200">
-                                <iframe
-                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d26546.02766!2d151.0873!3d-33.9643!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6b12b972f8b8c8c7%3A0x5017d681632c760!2sPenshurst%20NSW%202222!5e0!3m2!1sen!2sau!4v1704067200000!5m2!1sen!2sau"
-                                    width="100%"
-                                    height="100%"
-                                    style={{ border: 0 }}
-                                    allowFullScreen
-                                    loading="lazy"
-                                    referrerPolicy="no-referrer-when-downgrade"
-                                    title="Marvel Driving Service Area - Penshurst, Hurstville & Bexley, Sydney NSW"
-                                />
+                            {/* Service Area List */}
+                            <div className="p-10 bg-gray-50 rounded-[2.5rem] border border-gray-100">
+                                <h4 className="text-lg font-extrabold text-[#0a2f14] mb-4 uppercase tracking-widest">Our Service Area</h4>
+                                <ul className="grid grid-cols-1 gap-3">
+                                    {["Penshurst, NSW 2222", "Hurstville, NSW 2220", "Bexley, NSW 2207"].map((area) => (
+                                        <li key={area} className="flex items-center gap-2 text-gray-600 font-medium">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-[#fbbf24]" />
+                                            {area}
+                                        </li>
+                                    ))}
+                                </ul>
                             </div>
                         </div>
 
                         {/* Right Side - Contact Form */}
-                        <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-8 md:p-10">
-                            <h2 className="text-3xl font-bold text-gray-900 mb-3">Send Us a Message</h2>
-                            <p className="text-gray-600 mb-10 text-lg">
+                        <div className="bg-white rounded-[3rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-gray-50 p-10 md:p-14">
+                            <h2 className="text-3xl font-extrabold text-[#0a2f14] mb-4 tracking-tight">Send Us a Message</h2>
+                            <p className="text-gray-500 mb-12 text-base font-medium">
                                 Fill out the form below and we'll get back to you as soon as possible.
                             </p>
 
                             <form onSubmit={handleSubmit} className="space-y-8">
                                 <div className="space-y-3">
-                                    <Label htmlFor="name" className="text-gray-900 text-base font-semibold">Full Name *</Label>
+                                    <Label htmlFor="name" className="text-[#0a2f14] text-sm font-extrabold uppercase tracking-widest">Full Name *</Label>
                                     <Input
                                         id="name"
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                         required
                                         placeholder="Your full name"
-                                        className="h-14 bg-[#01331a] border-[#01331a] text-[#eefbf4] placeholder:text-[#eefbf4]/60 rounded-lg text-lg px-4"
+                                        className="h-16 bg-gray-50 border-none text-[#0a2f14] placeholder:text-gray-400 rounded-2xl text-lg px-6 focus-visible:ring-2 focus-visible:ring-[#1e5128]"
                                     />
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div className="space-y-3">
-                                        <Label htmlFor="email" className="text-gray-900 text-base font-semibold">Email *</Label>
+                                        <Label htmlFor="email" className="text-[#0a2f14] text-sm font-extrabold uppercase tracking-widest">Email *</Label>
                                         <Input
                                             id="email"
                                             type="email"
@@ -153,11 +190,11 @@ export default function Contact() {
                                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                             required
                                             placeholder="your@email.com"
-                                            className="h-14 bg-[#01331a] border-[#01331a] text-[#eefbf4] placeholder:text-[#eefbf4]/60 rounded-lg text-lg px-4"
+                                            className="h-16 bg-gray-50 border-none text-[#0a2f14] placeholder:text-gray-400 rounded-2xl text-lg px-6 focus-visible:ring-2 focus-visible:ring-[#1e5128]"
                                         />
                                     </div>
                                     <div className="space-y-3">
-                                        <Label htmlFor="phone" className="text-gray-900 text-base font-semibold">Phone *</Label>
+                                        <Label htmlFor="phone" className="text-[#0a2f14] text-sm font-extrabold uppercase tracking-widest">Phone *</Label>
                                         <Input
                                             id="phone"
                                             type="tel"
@@ -165,21 +202,21 @@ export default function Contact() {
                                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                             required
                                             placeholder="04XX XXX XXX"
-                                            className="h-14 bg-[#01331a] border-[#01331a] text-[#eefbf4] placeholder:text-[#eefbf4]/60 rounded-lg text-lg px-4"
+                                            className="h-16 bg-gray-50 border-none text-[#0a2f14] placeholder:text-gray-400 rounded-2xl text-lg px-6 focus-visible:ring-2 focus-visible:ring-[#1e5128]"
                                         />
                                     </div>
                                 </div>
 
                                 <div className="space-y-3">
-                                    <Label htmlFor="enquiryType" className="text-gray-900 text-base font-semibold">Enquiry Type *</Label>
+                                    <Label htmlFor="enquiryType" className="text-[#0a2f14] text-sm font-extrabold uppercase tracking-widest">Enquiry Type *</Label>
                                     <Select
                                         value={formData.enquiryType}
                                         onValueChange={(value) => setFormData({ ...formData, enquiryType: value })}
                                     >
-                                        <SelectTrigger className="h-14 bg-[#f3f4f6] border-gray-200 text-gray-900 rounded-lg text-lg px-4">
+                                        <SelectTrigger className="h-16 bg-gray-50 border-none text-[#0a2f14] rounded-2xl text-lg px-6 focus:ring-2 focus:ring-[#1e5128]">
                                             <SelectValue placeholder="Select enquiry type" />
                                         </SelectTrigger>
-                                        <SelectContent>
+                                        <SelectContent className="bg-white border-gray-100 rounded-2xl shadow-2xl">
                                             <SelectItem value="driving-lessons">Driving Lessons</SelectItem>
                                             <SelectItem value="ndis-transport">NDIS Transport</SelectItem>
                                             <SelectItem value="careers">Careers</SelectItem>
@@ -189,7 +226,7 @@ export default function Contact() {
                                 </div>
 
                                 <div className="space-y-3">
-                                    <Label htmlFor="message" className="text-gray-900 text-base font-semibold">Message *</Label>
+                                    <Label htmlFor="message" className="text-[#0a2f14] text-sm font-extrabold uppercase tracking-widest">Message *</Label>
                                     <Textarea
                                         id="message"
                                         value={formData.message}
@@ -197,14 +234,14 @@ export default function Contact() {
                                         required
                                         placeholder="Tell us how we can help you..."
                                         rows={6}
-                                        className="resize-none bg-[#f3f4f6] border-gray-200 text-gray-900 placeholder:text-gray-500 rounded-lg text-lg p-4 min-h-[160px]"
+                                        className="resize-none bg-gray-50 border-none text-[#0a2f14] placeholder:text-gray-400 rounded-2xl text-lg p-6 min-h-[160px] focus-visible:ring-2 focus-visible:ring-[#1e5128]"
                                     />
                                 </div>
 
                                 <Button
                                     type="submit"
                                     size="lg"
-                                    className="w-full bg-[#dc2626] hover:bg-[#b91c1c] text-white h-14 text-lg font-bold rounded-lg shadow-md transition-all hover:shadow-lg mt-2"
+                                    className="w-full bg-[#dc2626] hover:bg-[#b91c1c] text-white h-16 text-lg font-extrabold rounded-full shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02] active:scale-95 mt-4"
                                     disabled={isSubmitting}
                                 >
                                     {isSubmitting ? (
@@ -212,7 +249,7 @@ export default function Contact() {
                                     ) : (
                                         <>
                                             Send Message
-                                            <Send className="h-5 w-5 ml-2" />
+                                            <Send className="h-5 w-5 ml-3" />
                                         </>
                                     )}
                                 </Button>
