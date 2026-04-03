@@ -27,6 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
+        suppressHydrationWarning
         className={clsx(
           plusJakarta.variable, // Added variable class
           plusJakarta.className,

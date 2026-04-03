@@ -29,7 +29,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { ServiceAreaBanner } from "@/components/ServiceAreaBanner";
 import { useToast } from "@/hooks/use-toast";
-import { createClient } from "@/lib/supabase";
+
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import {
@@ -88,7 +88,7 @@ function BookingContent() {
     const [step, setStep] = useState(1);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [emailError, setEmailError] = useState("");
-    const supabase = createClient();
+
 
     const minBookingDate = startOfDay(addDays(new Date(), 1));
     const [formData, setFormData] = useState({
@@ -162,65 +162,18 @@ function BookingContent() {
         setIsSubmitting(true);
 
         const dateStr = formData.lessonDate ? format(formData.lessonDate, "yyyy-MM-dd") : "";
-        const [t, period] = formData.lessonTime.split(' ');
-        const [hours, minutes] = t.split(':').map(Number);
-        let h = hours;
-        if (period === 'PM' && hours !== 12) h += 12;
-        if (period === 'AM' && hours === 12) h = 0;
-        const dbTime = `${String(h).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`;
-
-        if (formData.lessonDate && formData.lessonTime) {
-            const { data: conflict } = await supabase
-                .from('bookings')
-                .select('id')
-                .eq('booking_date', dateStr)
-                .eq('booking_time', dbTime)
-                .neq('status', 'cancelled')
-                .limit(1)
-                .maybeSingle();
-
-            if (conflict) {
-                toast({
-                    title: "Time Slot Already Booked",
-                    description: "This time slot is already booked, please choose another time.",
-                    variant: "destructive",
-                });
-                setIsSubmitting(false);
-                return;
-            }
-        }
-
         const selectedService = serviceTypes.find(s => s.value === formData.serviceType);
 
         if (selectedService?.isPaid) {
             try {
-                const { data: booking, error: insertError } = await supabase
-                    .from('bookings')
-                    .insert({
-                        customer_name: `${formData.firstName} ${formData.lastName}`,
-                        customer_email: formData.email,
-                        customer_phone: formData.phone,
-                        pickup_address: formData.suburb,
-                        lesson_type: formData.serviceType,
-                        booking_date: dateStr,
-                        booking_time: dbTime,
-                        notes: `Price: ${selectedService.price}\nExperience: ${formData.experience}\n${formData.notes}`,
-                        status: 'pending',
-                        payment_status: 'unpaid',
-                    })
-                    .select()
-                    .single();
-
-                if (insertError) throw insertError;
-
-                // Call Stripe Checkout
+                // Now directly call Stripe Checkout, handle creation on the API side
                 const response = await fetch('/api/checkout', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        bookingId: booking.id,
                         customerName: `${formData.firstName} ${formData.lastName}`,
                         customerEmail: formData.email,
+                        customerPhone: formData.phone,
                         serviceName: selectedService.label,
                         price: selectedService.price,
                         date: dateStr,
@@ -228,45 +181,52 @@ function BookingContent() {
                     }),
                 });
 
-                const checkout = await response.json();
-                if (checkout.url) {
-                    window.location.assign(checkout.url);
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || "Failed to process booking.");
+                }
+
+                if (result.url) {
+                    window.location.assign(result.url);
                 } else {
-                    throw new Error(checkout.error || 'Failed to create checkout session');
+                    throw new Error('Failed to create checkout session');
                 }
 
             } catch (error: any) {
-                console.error('Detailed Payment Error:', error);
-                const errorMessage = error.message || (typeof error === 'object' ? JSON.stringify(error) : String(error));
-                
+                console.error('Payment Error:', error);
                 toast({
                     title: "Booking Error",
-                    description: errorMessage.includes('relation "public.bookings" does not exist') 
-                        ? "Database not initialized. Please run the schema.sql in Supabase." 
-                        : errorMessage,
+                    description: error.message || "There was an error processing your payment.",
                     variant: "destructive",
                 });
             } finally {
                 setIsSubmitting(false);
             }
         } else {
+            // NDIS Booking
             try {
-                const { error } = await supabase
-                    .from('bookings')
-                    .insert({
-                        customer_name: `${formData.firstName} ${formData.lastName}`,
-                        customer_email: formData.email,
-                        customer_phone: formData.phone,
-                        pickup_address: formData.suburb,
-                        lesson_type: formData.serviceType,
-                        booking_date: dateStr,
-                        booking_time: dbTime,
-                        notes: `NDIS Number: ${formData.ndisNumber}\nExperience: ${formData.experience}\n${formData.notes}`,
-                        status: 'pending',
-                        payment_status: 'unpaid',
-                    });
+                const response = await fetch('/api/bookings/unpaid', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        customerName: `${formData.firstName} ${formData.lastName}`,
+                        customerEmail: formData.email,
+                        customerPhone: formData.phone,
+                        serviceName: selectedService?.label,
+                        date: dateStr,
+                        time: formData.lessonTime,
+                        ndisNumber: formData.ndisNumber,
+                        suburb: formData.suburb,
+                        notes: `Experience: ${formData.experience}\n${formData.notes}`
+                    }),
+                });
 
-                if (error) throw error;
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || "Failed to submit booking.");
+                }
 
                 toast({
                     title: "Booking Request Submitted!",

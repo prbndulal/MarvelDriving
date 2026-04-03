@@ -13,7 +13,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useAuth } from "@/hooks/useAuth";
+import { useSession, signOut } from "next-auth/react";
 
 const logo = "/logo.png";
 
@@ -39,14 +39,16 @@ export function Navbar() {
     const [isServicesOpen, setIsServicesOpen] = useState(false);
     const pathname = usePathname();
     const router = useRouter();
-    const { user, isAdmin, signOut, isLoading } = useAuth();
+    const { data: session, status } = useSession();
+    const user = session?.user;
+    const isAdmin = (user as any)?.role === 'admin';
+    const isLoading = status === 'loading';
 
     // Is active logic
     const isServiceActive = serviceLinks.some(link => pathname === link.href);
 
     const handleSignOut = async () => {
-        await signOut();
-        router.push('/');
+        await signOut({ callbackUrl: '/' });
     };
 
     // Prevent body scroll when mobile menu is open

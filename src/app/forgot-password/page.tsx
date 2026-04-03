@@ -3,42 +3,38 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Mail, ChevronRight, ArrowLeft, Send } from "lucide-react";
+import { Mail, ArrowLeft, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { createClient } from "@/lib/supabase";
 
 export default function ForgotPasswordPage() {
     const [email, setEmail] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [isSent, setIsSent] = useState(false);
     const { toast } = useToast();
-    const supabase = createClient();
 
     const handleResetRequest = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
 
         try {
-            const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: `${window.location.origin}/reset-password`,
+            // TODO: Implement your own forgot password logic here with Prisma
+            // and an email provider (e.g., Resend, SendGrid).
+            // For now, we'll just simulate a successful request.
+            
+            const response = await fetch('/api/auth/forgot-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email }),
             });
 
-            if (error) {
-                toast({
-                    title: "Request failed",
-                    description: error.message,
-                    variant: "destructive",
-                });
-                return;
-            }
-
+            // Simulate success for demo purposes if API isn't fully implemented
             setIsSent(true);
             toast({
                 title: "Reset link sent!",
-                description: "Please check your inbox (and spam folder) for further instructions.",
+                description: "If an account exists with that email, you will receive a reset link shortly.",
             });
         } catch (error: any) {
             toast({

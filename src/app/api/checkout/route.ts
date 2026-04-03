@@ -1,16 +1,17 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { prisma } from "@/lib/prisma";
 
 // Lazy initialize Stripe to avoid build-time errors if environment variables are missing
-let stripe: Stripe | null = null;
+let stripeInstance: Stripe | null = null;
 
 function getStripe() {
-    if (!stripe && process.env.STRIPE_SECRET_KEY) {
-        stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+    if (!stripeInstance && process.env.STRIPE_SECRET_KEY) {
+        stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY, {
             apiVersion: '2024-12-18.acacia' as any,
         });
     }
-    return stripe;
+    return stripeInstance;
 }
 
 export async function POST(req: Request) {
@@ -25,8 +26,9 @@ export async function POST(req: Request) {
 
         const body = await req.json();
         const {
-            bookingId,
+            customerName,
             customerEmail,
+            customerPhone,
             serviceName,
             price,
             date,
@@ -34,13 +36,42 @@ export async function POST(req: Request) {
         } = body;
 
         // Clean price string
-        const numericPrice = parseInt(price.replace(/[^0-9]/g, ''));
+        const numericPrice = typeof price === 'string' ? parseInt(price.replace(/[^0-9]/g, '')) : price;
 
         const stripe = getStripe();
         if (!stripe) {
             throw new Error('Stripe is not configured. STRIPE_SECRET_KEY may be missing.');
         }
 
+        // 1. Conflict Check
+        const existing = await prisma.booking.findFirst({
+            where: {
+                date: new Date(date),
+                time: time,
+                status: { not: 'cancelled' }
+            }
+        });
+
+        if (existing) {
+            return NextResponse.json({ error: "This time slot is already booked." }, { status: 400 });
+        }
+
+        // 2. Create a Pending Booking in your Render database
+        const booking = await prisma.booking.create({
+            data: {
+                customerName,
+                customerEmail,
+                customerPhone,
+                serviceName,
+                servicePrice: numericPrice,
+                date: new Date(date),
+                time: time,
+                status: 'pending',
+                paymentStatus: 'unpaid'
+            }
+        });
+
+        // 3. Create the Stripe Checkout Session
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             customer_email: customerEmail,
@@ -58,10 +89,10 @@ export async function POST(req: Request) {
                 },
             ],
             mode: 'payment',
-            success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/book?status=success&booking_id=${bookingId}`,
-            cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/book?status=cancelled&booking_id=${bookingId}`,
+            success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/book?status=success&booking_id=${booking.id}`,
+            cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/book?status=cancelled&booking_id=${booking.id}`,
             metadata: {
-                bookingId: bookingId,
+                bookingId: booking.id,
             },
         });
 

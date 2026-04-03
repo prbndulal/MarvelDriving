@@ -14,10 +14,23 @@ export function GetInTouchSection() {
         message: ''
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        alert("Message sent! (Simulation)");
-        setFormData({ fullName: '', phoneNumber: '', email: '', message: '' });
+        try {
+            const response = await fetch('/api/enquiry', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+
+            if (!response.ok) throw new Error("Failed to send message.");
+
+            alert("Message sent! We'll get back to you soon.");
+            setFormData({ fullName: '', phoneNumber: '', email: '', message: '' });
+        } catch (error: any) {
+            alert("Error sending message. Please try again.");
+            console.error(error);
+        }
     };
 
     // Placeholder for TikTok icon as it's not in standard lucide set used

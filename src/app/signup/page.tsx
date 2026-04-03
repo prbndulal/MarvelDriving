@@ -3,13 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { motion } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff, UserPlus, ChevronRight, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { createClient } from "@/lib/supabase";
 
 export default function SignupPage() {
     const [name, setName] = useState("");
@@ -20,7 +20,6 @@ export default function SignupPage() {
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     const { toast } = useToast();
-    const supabase = createClient();
 
     const handleSignup = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -37,20 +36,19 @@ export default function SignupPage() {
         setIsLoading(true);
 
         try {
-            const { error: signUpError, data } = await supabase.auth.signUp({
-                email,
-                password,
-                options: {
-                    data: {
-                        full_name: name,
-                    },
-                },
+            // First, call our new Signup API
+            const response = await fetch("/api/auth/signup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password, name }),
             });
 
-            if (signUpError) {
+            const data = await response.json();
+
+            if (!response.ok) {
                 toast({
                     title: "Signup failed",
-                    description: signUpError.message,
+                    description: data.error || "Something went wrong.",
                     variant: "destructive",
                 });
                 return;
@@ -58,12 +56,17 @@ export default function SignupPage() {
 
             toast({
                 title: "Account created!",
-                description: "Development bypass: Logging you in automatically.",
+                description: "Logging you in...",
             });
             
-            // For development, we assume auto-login or redirect
-            router.push("/");
-            router.refresh();
+            // Automatically log in the user using the new credentials
+            await signIn("credentials", {
+                email,
+                password,
+                redirect: true,
+                callbackUrl: "/admin",
+            });
+
         } catch (error: any) {
             toast({
                 title: "An error occurred",
@@ -208,3 +211,4 @@ export default function SignupPage() {
         </div>
     );
 }
+

@@ -15,8 +15,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/useAuth";
-import { createClient } from "@/lib/supabase";
+import { signOut } from "next-auth/react";
 import { useToast } from "@/hooks/use-toast";
 
 const sidebarItems = [
@@ -51,21 +50,20 @@ export function AdminSidebar() {
     const pathname = usePathname();
     const router = useRouter();
     const { toast } = useToast();
-    const supabase = createClient();
 
     const handleSignOut = async () => {
-        const { error } = await supabase.auth.signOut();
-        if (error) {
-            toast({
-                title: "Sign out failed",
-                description: error.message,
-                variant: "destructive"
-            });
-        } else {
+        try {
+            await signOut({ redirect: false });
             router.push("/login");
             toast({
                 title: "Signed out",
                 description: "You have been securely logged out.",
+            });
+        } catch (error: any) {
+            toast({
+                title: "Sign out failed",
+                description: "Could not complete logout.",
+                variant: "destructive"
             });
         }
     };

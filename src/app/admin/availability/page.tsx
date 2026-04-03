@@ -4,18 +4,16 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { createClient } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
 import { Switch } from "@/components/ui/switch";
-import { Loader2, Save, Clock, Calendar, AlertCircle } from "lucide-react";
+import { Loader2, Save, Clock, AlertCircle } from "lucide-react";
 
 interface DaySchedule {
-    id?: number;
-    day_of_week: number;
+    dayOfWeek: number;
     label: string;
-    start_time: string;
-    end_time: string;
-    is_active: boolean;
+    startTime: string;
+    endTime: string;
+    isActive: boolean;
 }
 
 const DAYS = [
@@ -30,7 +28,6 @@ const DAYS = [
 
 export default function AvailabilityPage() {
     const { toast } = useToast();
-    const supabase = createClient();
     const [schedules, setSchedules] = useState<DaySchedule[]>([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -38,33 +35,33 @@ export default function AvailabilityPage() {
     useEffect(() => {
         async function fetchSchedules() {
             setLoading(true);
-            const { data, error } = await supabase
-                .from("availability")
-                .select("*")
-                .order("day_of_week", { ascending: true });
+            try {
+                const response = await fetch("/api/availability/manage");
+                const data = await response.json();
 
-            if (error) {
+                const dbRules = data.rules || [];
+
+                const mergedSchedules = DAYS.map((day) => {
+                    const existing = dbRules.find((d: any) => d.dayOfWeek === day.id);
+                    return {
+                        dayOfWeek: day.id,
+                        label: day.label,
+                        startTime: existing?.startTime || "07:00",
+                        endTime: existing?.endTime || "18:00",
+                        isActive: existing?.isActive ?? true,
+                    };
+                });
+
+                setSchedules(mergedSchedules);
+            } catch (error: any) {
                 toast({
                     title: "Error fetching settings",
                     description: error.message,
                     variant: "destructive",
                 });
+            } finally {
+                setLoading(false);
             }
-
-            const mergedSchedules = DAYS.map((day) => {
-                const existing = data?.find((d) => d.day_of_week === day.id);
-                return {
-                    day_of_week: day.id,
-                    label: day.label,
-                    start_time: existing?.start_time || "07:00",
-                    end_time: existing?.end_time || "18:00",
-                    is_active: existing?.is_active ?? true,
-                    id: existing?.id,
-                };
-            });
-
-            setSchedules(mergedSchedules);
-            setLoading(false);
         }
 
         fetchSchedules();
@@ -79,23 +76,17 @@ export default function AvailabilityPage() {
     const handleSave = async () => {
         setSaving(true);
         try {
-            const upsertData = schedules.map(s => ({
-                day_of_week: s.day_of_week,
-                start_time: s.start_time,
-                end_time: s.end_time,
-                is_active: s.is_active,
-                id: s.id // If ID exists, Supabase will update
-            }));
+            const response = await fetch("/api/availability/manage", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ schedules }),
+            });
 
-            const { error } = await supabase
-                .from("availability")
-                .upsert(upsertData, { onConflict: 'day_of_week' });
-
-            if (error) throw error;
+            if (!response.ok) throw new Error("Failed to save schedule.");
 
             toast({
                 title: "Schedule Updated",
-                description: "Your weekly availability has been saved successfully.",
+                description: "Your weekly availability has been saved in PostgreSQL.",
             });
         } catch (error: any) {
             toast({
@@ -119,7 +110,7 @@ export default function AvailabilityPage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-extrabold text-[#0a2f14] tracking-tight">Availability</h1>
-                    <p className="text-gray-500 font-medium">Set your standard working hours for the booking engine</p>
+                    <p className="text-gray-500 font-medium uppercase tracking-[0.2em] text-[10px]">Weekly Working Hours • PostgreSQL</p>
                 </div>
                 <Button 
                     onClick={handleSave} 
@@ -144,9 +135,9 @@ export default function AvailabilityPage() {
                     <div className="space-y-4">
                         {schedules.map((day, index) => (
                             <div 
-                                key={day.day_of_week} 
+                                key={day.dayOfWeek} 
                                 className={`flex flex-col sm:flex-row items-center gap-6 p-6 rounded-[2rem] border transition-all duration-300 ${
-                                    day.is_active 
+                                    day.isActive 
                                     ? "bg-white border-gray-100 shadow-sm" 
                                     : "bg-gray-50/50 border-transparent opacity-60 grayscale-[0.5]"
                                 }`}
@@ -158,22 +149,22 @@ export default function AvailabilityPage() {
 
                                 <div className="flex items-center gap-3 bg-gray-50 px-4 py-2 rounded-2xl">
                                     <Switch
-                                        checked={day.is_active}
-                                        onCheckedChange={(checked: boolean) => handleUpdate(index, "is_active", checked)}
+                                        checked={day.isActive}
+                                        onCheckedChange={(checked: boolean) => handleUpdate(index, "isActive", checked)}
                                         className="data-[state=checked]:bg-[#1e5128]"
                                     />
-                                    <span className={`text-xs font-extrabold uppercase tracking-widest min-w-[60px] ${day.is_active ? "text-[#1e5128]" : "text-gray-400"}`}>
-                                        {day.is_active ? "Active" : "Oﬀ Duty"}
+                                    <span className={`text-xs font-extrabold uppercase tracking-widest min-w-[60px] ${day.isActive ? "text-[#1e5128]" : "text-gray-400"}`}>
+                                        {day.isActive ? "Active" : "Oﬀ Duty"}
                                     </span>
                                 </div>
 
-                                {day.is_active ? (
+                                {day.isActive ? (
                                     <div className="flex items-center gap-4 flex-1 justify-end">
                                         <div className="relative">
                                             <Input
                                                 type="time"
-                                                value={day.start_time}
-                                                onChange={(e) => handleUpdate(index, "start_time", e.target.value)}
+                                                value={day.startTime}
+                                                onChange={(e) => handleUpdate(index, "startTime", e.target.value)}
                                                 className="w-36 h-12 bg-white border-gray-100 rounded-xl font-bold text-[#0a2f14] px-4 focus:ring-[#1e5128]/20 transition-all"
                                             />
                                         </div>
@@ -181,8 +172,8 @@ export default function AvailabilityPage() {
                                         <div className="relative">
                                             <Input
                                                 type="time"
-                                                value={day.end_time}
-                                                onChange={(e) => handleUpdate(index, "end_time", e.target.value)}
+                                                value={day.endTime}
+                                                onChange={(e) => handleUpdate(index, "endTime", e.target.value)}
                                                 className="w-36 h-12 bg-white border-gray-100 rounded-xl font-bold text-[#0a2f14] px-4 focus:ring-[#1e5128]/20 transition-all"
                                             />
                                         </div>
@@ -201,14 +192,12 @@ export default function AvailabilityPage() {
             <div className="bg-amber-50 border border-amber-100 p-6 rounded-[2rem] flex items-start gap-4">
                 <AlertCircle className="h-6 w-6 text-amber-600 shrink-0 mt-0.5" />
                 <div>
-                    <h4 className="font-extrabold text-amber-900 mb-1 tracking-tight">Important Note</h4>
+                    <h4 className="font-extrabold text-amber-900 mb-1 tracking-tight">PostgreSQL Note</h4>
                     <p className="text-sm text-amber-800/80 font-medium leading-relaxed">
-                        Changes to your weekly schedule will only affect **future** bookings. Any existing confirmed 
-                        appointments that fall outside new hours will need to be rescheduled manually via the Bookings page.
+                        Weekly schedules are now synchronized with your Render PostgreSQL database.
                     </p>
                 </div>
             </div>
         </div>
     );
 }
-

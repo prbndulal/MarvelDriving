@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { createClient } from '@supabase/supabase-js';
+import { prisma } from "@/lib/prisma";
 
 // Lazy initialization to prevent build-time crashes if keys are missing
 let stripeInstance: Stripe | null = null;
-let supabaseInstance: any = null;
 
 function getStripe() {
     if (!stripeInstance && process.env.STRIPE_SECRET_KEY) {
@@ -15,25 +14,14 @@ function getStripe() {
     return stripeInstance;
 }
 
-function getSupabase() {
-    if (!supabaseInstance && process.env.NEXT_PUBLIC_SUPABASE_URL) {
-        supabaseInstance = createClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL,
-            process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-        );
-    }
-    return supabaseInstance;
-}
-
 export async function POST(req: Request) {
     const body = await req.text();
     const signature = req.headers.get('stripe-signature') as string;
 
     const stripe = getStripe();
-    const supabaseAdmin = getSupabase();
 
-    if (!stripe || !supabaseAdmin) {
-        return NextResponse.json({ error: 'Services not initialized' }, { status: 500 });
+    if (!stripe) {
+        return NextResponse.json({ error: 'Stripe not initialized' }, { status: 500 });
     }
 
     let event: Stripe.Event;
@@ -54,17 +42,18 @@ export async function POST(req: Request) {
         const bookingId = session.metadata?.bookingId;
 
         if (bookingId) {
-            const { error } = await supabaseAdmin
-                .from('bookings')
-                .update({ 
-                    payment_status: 'paid',
-                    status: 'confirmed',
-                    stripe_payment_id: session.id as string
-                })
-                .eq('id', bookingId);
-
-            if (error) {
-                console.error('Error updating booking in webhook:', error);
+            try {
+                // Update booking in Render PostgreSQL using Prisma
+                await prisma.booking.update({
+                    where: { id: bookingId },
+                    data: {
+                        paymentStatus: 'paid',
+                        status: 'confirmed',
+                        stripeId: session.id as string
+                    }
+                });
+            } catch (error: any) {
+                console.error('Error updating booking in Prisma webhook:', error);
                 return NextResponse.json({ error: 'Database update failed' }, { status: 500 });
             }
         }

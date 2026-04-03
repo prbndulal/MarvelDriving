@@ -3,13 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { motion } from "framer-motion";
 import { Mail, Lock, Eye, EyeOff, LogIn, ChevronRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { createClient } from "@/lib/supabase";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -18,22 +18,22 @@ export default function LoginPage() {
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     const { toast } = useToast();
-    const supabase = createClient();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
 
         try {
-            const { error } = await supabase.auth.signInWithPassword({
+            const result = await signIn("credentials", {
                 email,
                 password,
+                redirect: false,
             });
 
-            if (error) {
+            if (result?.error) {
                 toast({
                     title: "Login failed",
-                    description: error.message,
+                    description: "Invalid email or password.",
                     variant: "destructive",
                 });
                 return;
@@ -41,10 +41,10 @@ export default function LoginPage() {
 
             toast({
                 title: "Welcome back!",
-                description: "You have successfully signed in.",
+                description: "Redirecting to your dashboard...",
             });
             
-            router.push("/");
+            router.push("/admin");
             router.refresh();
         } catch (error: any) {
             toast({
@@ -157,7 +157,7 @@ export default function LoginPage() {
                                     Instant Admin Access (Test Mode)
                                 </Button>
                                 <p className="text-[10px] text-center text-gray-400 mt-2 font-medium italic">
-                                    Bypasses Supabase Auth for local development
+                                    Bypasses Auth for local development
                                 </p>
                             </div>
 
@@ -177,7 +177,6 @@ export default function LoginPage() {
                     </div>
                 </div>
                 
-                {/* Optional: Simple Back to Home Link */}
                 <div className="text-center mt-8">
                     <Link 
                         href="/" 
@@ -191,3 +190,4 @@ export default function LoginPage() {
         </div>
     );
 }
+
