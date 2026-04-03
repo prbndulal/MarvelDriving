@@ -3,8 +3,10 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
+import { authConfig } from "./auth.config";
 
 const result = NextAuth({
+    ...authConfig,
     adapter: PrismaAdapter(prisma),
     trustHost: true,
     providers: [
@@ -24,7 +26,6 @@ const result = NextAuth({
                 if (user && user.password) {
                     const isPasswordValid = await bcrypt.compare(credentials.password as string, user.password);
                     
-                    // Fallback for plain text until next login
                     if (!isPasswordValid && user.password === credentials.password) {
                         return {
                             id: user.id,
@@ -47,9 +48,10 @@ const result = NextAuth({
             }
         })
     ],
+    // Only use the heavy Prisma stuff here if absolutely needed,
+    // otherwise pass things via JWT
     callbacks: {
-        async jwt({ token, user, trigger, session }) {
-            // Initial sign in
+        async jwt({ token, user }) {
             if (user) {
                 token.id = user.id;
                 token.role = (user as any).role;
@@ -63,12 +65,6 @@ const result = NextAuth({
             }
             return session;
         }
-    },
-    pages: {
-        signIn: "/login",
-    },
-    session: {
-        strategy: "jwt"
     },
     secret: process.env.NEXTAUTH_SECRET,
 });
