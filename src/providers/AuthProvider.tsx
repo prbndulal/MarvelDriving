@@ -19,7 +19,8 @@ const ADMIN_EMAILS = [
     "admin@example.com",
     "admin@marvel.com",
     "dev@marvel.com",
-    "test-admin@marvel.com"
+    "test-admin@marvel.com",
+    "admin@marveldriving.com.au"
 ];
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
