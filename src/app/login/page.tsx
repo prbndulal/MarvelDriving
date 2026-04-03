@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Mail, Lock, Eye, EyeOff, LogIn, ChevronRight } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, LogIn, ChevronRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -143,18 +143,22 @@ export default function LoginPage() {
                                 )}
                             </Button>
 
-                            <div className="pt-2">
+                            <div className="pt-6">
                                 <Button 
                                     type="button"
-                                    variant="ghost"
+                                    variant="outline"
                                     onClick={() => {
-                                        sessionStorage.setItem('admin_bypass_email', 'test-admin@marvel.com');
+                                        sessionStorage.setItem('admin_bypass_email', 'admin@marveldriving.com.au');
                                         window.location.href = '/admin';
                                     }}
-                                    className="w-full h-10 text-gray-300 hover:text-[#1e5128] font-bold text-[10px] uppercase tracking-widest opacity-20 hover:opacity-100"
+                                    className="w-full h-12 border-[#1e5128]/20 bg-[#1e5128]/5 text-[#1e5128] font-black text-sm rounded-2xl hover:bg-[#1e5128]/10 transition-all flex items-center justify-center gap-2"
                                 >
-                                    [ Developer Admin Bypass ]
+                                    <CheckCircle2 className="h-4 w-4" />
+                                    Instant Admin Access (Test Mode)
                                 </Button>
+                                <p className="text-[10px] text-center text-gray-400 mt-2 font-medium italic">
+                                    Bypasses Supabase Auth for local development
+                                </p>
                             </div>
 
 
