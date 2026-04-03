@@ -1,56 +1,47 @@
-# Deployment Guide - Eternal Gravity
+# Deployment Guide - Marvel Driving
 
-This guide explains how to host your Next.js website on **Vercel**, the recommended platform for Next.js.
+This guide explains how to host your Next.js website on **Vercel** with a **Render PostgreSQL** database.
 
 ## 1. Prerequisites
 - A GitHub account.
 - A Vercel account (sign up at [vercel.com](https://vercel.com)).
+- A Render account (for PostgreSQL) or any other managed Postgres provider.
 - Your code pushed to a GitHub repository.
 
-## 2. Deploy to Vercel
-1.  **Log in to Vercel**.
-2.  Click **"Add New..."** -> **"Project"**.
-3.  **Import Git Repository**:
-    - Select your GitHub account.
-    - Find the `eternal-gravity` repository and click **"Import"**.
-4.  **Configure Project**:
-    - **Framework Preset**: Next.js (should be auto-detected).
-    - **Root Directory**: `./` (default).
-    - **Environment Variables**:
-        - You will need to add Supabase variables later (see Section 3).
-        - For now, you can leave them empty or add placeholders.
-5.  Click **"Deploy"**.
+## 2. Database Setup (PostgreSQL)
+1.  **Create a New Database on Render**:
+    - Select **New** -> **PostgreSQL**.
+    - Region: Choose one close to your users (e.g., Sydney, Australia, if available).
+    - Database Name: `marvel_driving`
+2.  **Get Your Connection String**:
+    - Once the database is created, copy the **Internal Database URL** or **External Database URL**.
+    - It should look like this: `postgresql://user:password@hostname:5432/dbname?sslmode=require`.
 
-Vercel will build your project and verify it. Once complete, you will get a live URL (e.g., `eternal-gravity.vercel.app`).
+## 3. Deploy to Vercel
+1.  **Import Your Project**:
+    - Connect your GitHub and import the `eternal-gravity` repository.
+2.  **Configure Environment Variables**:
+    - Add these critical variables:
+        - `DATABASE_URL`: Your Render PostgreSQL connection string.
+        - `NEXTAUTH_SECRET`: A long random string (e.g., `openssl rand -base64 32`).
+        - `NEXTAUTH_URL`: Your Vercel production URL (e.g., `https://your-app.vercel.app`).
+        - `STRIPE_SECRET_KEY`: Your Stripe secret key.
+        - `NEXT_PUBLIC_BASE_URL`: Your primary domain URL.
+3.  **Deploy**:
+    - Vercel will build your project. During build, it will run `npx prisma generate` automatically if configured.
 
-## 3. Database Setup (Supabase)
-To enable bookings and the admin panel, you need a database.
+## 4. Run Database Migrations
+To ensure your database tables are created:
+1.  Locally, run:
+    ```bash
+    npx prisma db push
+    ```
+    This syncs your `schema.prisma` with the live database.
 
-1.  Go to [supabase.com](https://supabase.com) and sign up.
-2.  **Create a New Project**:
-    - Name: `Eternal Gravity`
-    - Region: Choose one close to your users (e.g., Sydney, Australia).
-    - Database Password: Generate a strong password and save it.
-3.  **Get API Keys**:
-    - Go to **Project Settings** -> **API**.
-    - Copy the `Project URL` and `anon public` key.
-4.  **Add to Vercel**:
-    - Go to your Vercel project dashboard -> **Settings** -> **Environment Variables**.
-    - Add:
-        - `NEXT_PUBLIC_SUPABASE_URL`: Your Project URL
-        - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Your anon public key
-    - Redeploy your project for changes to take effect (Go to **Deployments** -> Redeploy).
-
-## 4. Run Database Schema
-1.  In Supabase Dashboard, go to **SQL Editor**.
-2.  Copy the content of `supabase/schema.sql` (found in your project code).
-3.  Paste it into the SQL Editor and click **Run**.
-    - This will create the necessary tables for bookings, enquiries, and profiles.
-
-## 5. Stripe Setup (Coming Soon)
-For payments, you will need to add Stripe keys:
-- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
-- `STRIPE_SECRET_KEY`
+## 5. Stripe Webhooks
+1.  Go to **Stripe Dashboard** -> **Developers** -> **Webhooks**.
+2.  Add an endpoint pointing to `https://your-app.vercel.app/api/webhooks/stripe`.
+3.  Copy the **Webhook Secret** and add it to Vercel as `STRIPE_WEBHOOK_SECRET`.
 
 ---
-**Your website is now hosted!**
+**Your website is now hosted and secure!**
